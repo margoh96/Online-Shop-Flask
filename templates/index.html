@@ -1,0 +1,44 @@
+{% include "header.html" %}
+{% block content %}
+
+<header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1>My Online Shop</h1>
+                    <span class="subheading">A collection of Garbage.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col col-md-2">
+            {% if current_user : %}
+            <a href="{{ url_for('add_new_product') }}" class="btn btn-primary">Add New Product</a>
+            {% endif %}
+        </div>
+        <div class="col-md-10">
+            {% for list in products %}
+            <div class="col-md-3">
+
+                <img class="img_show_case" src="{{ list.img_url }}">
+                <a>{{ list.name }}</a>
+                <a>{{ list.price }}</a>
+            </div>
+
+            {% endfor %}
+    </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}

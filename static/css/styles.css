@@ -1,0 +1,10 @@
+.masthead{
+    padding-top:100px;
+
+}
+
+.img_show_case{
+    height : 100px;
+    width : 150px;
+    object-fit: cover;
+}
