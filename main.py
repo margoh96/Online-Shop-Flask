@@ -26,7 +26,6 @@ migrate = Migrate(app, db)
 class ShopProduct(db.Model):
     __tablename__ = "ShopProducts"
     id = db.Column(db.Integer, primary_key=True)
-    # author = db.Column(db.String(250), nullable=False)
     name = db.Column(db.String(250), unique=True, nullable=False)
     description = db.Column(db.String, nullable=False)
     upload_date = db.Column(db.String(250), nullable=False)
@@ -35,9 +34,16 @@ class ShopProduct(db.Model):
     img_url = db.Column(db.String(250), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('shop_products', lazy=True))
-    # author_id = db.Column(db.Integer, ForeignKey('user.id'))
-    # author = relationship("User", back_populates="blogpost")
-    # comments = relationship("Comment", back_populates="post_comment")
+
+
+class ShoppingCart(db.Model):
+    __tablename__ = "ShoppingCart"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('shopping_cart', uselist=False)) #uselist=False, it indicates a one-to-one relationship or a many-to-one relationship, where the relationship attribute represents a single object. In your case, user in the ShoppingCart model is associated with a single User object, indicating that each shopping cart is associated with a specific user.
+    product_id = db.Column(db.Integer, db.ForeignKey('ShopProducts.id'), nullable=False)
+    product_quantity = db.Column(db.Integer, nullable=False)
+    products = db.relationship('ShopProduct', backref=db.backref("shopping_cart"))
 
 
 class User(UserMixin, db.Model):
@@ -46,6 +52,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(200))
     name = db.Column(db.String(1000))
+    carts = db.relationship('ShopProduct', secondary=ShoppingCart.__table__, backref='user_carts')
     # cart = relationship("ShopProduct", backref=backref("user", lazy=True))
     # products = relationship("ShopProduct", backref=backref("user", lazy=True))
     # comments = relationship("Comment", back_populates="comment_author")
@@ -54,12 +61,12 @@ def get_id(self):
     return str(self.id)
 
 #Line below only required once, when creating DB.
-# with app.app_context():
+with app.app_context():
 #     sql_text = text('ALTER TABLE "ShopProducts" ADD COLUMN user_id INTEGER')
 #     db.session.execute(sql_text)
 #     db.session.commit()
-# #     db.create_all()
-#     db.session.commit()
+    db.create_all()
+    db.session.commit()
 
 
 
@@ -135,6 +142,41 @@ def add_new_product():
         db.session.commit()
         return redirect(url_for("home"))
     return render_template("add_product.html", form=form, current_user=current_user)
+
+# @app.route('/add_cart/<int:product_id>', methods=["POST", "GET"])
+# @login_required
+# def add_cart(product_id):
+#     all_cart = ShoppingCart.query.all()
+#     product_increase = 1
+#     for cart in all_cart :
+#         if (cart.user_id == current_user.id) and (cart.product_id == product_id):
+#             product_increase = cart.product_quantity + 1
+#             break
+#
+#     add_cart = ShoppingCart(
+#         user_id=current_user.id,
+#         product_id=product_id,
+#         product_quantity= product_increase,
+#     )
+#     db.session.add(add_cart)
+#     db.session.commit()
+#     return redirect(url_for("home"))
+
+@app.route('/add_cart/<int:product_id>', methods=["POST", "GET"])
+@login_required
+def add_cart(product_id):
+    cart = ShoppingCart.query.filter_by(user_id=current_user.id, product_id=product_id).first()
+    if cart:
+        cart.product_quantity += 1
+    else:
+        cart = ShoppingCart(
+            user_id=current_user.id,
+            product_id=product_id,
+            product_quantity=1,
+        )
+        db.session.add(cart)
+    db.session.commit()
+    return redirect(url_for("home"))
 
 
 

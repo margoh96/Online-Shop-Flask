@@ -31,6 +31,9 @@
                 <img class="img_show_case" src="{{ list.img_url }}">
                 <a>{{ list.name }}</a>
                 <a>{{ list.price }}</a>
+                <a>{{ list.user.name }}</a>
+                <a class="btn btn-primary" href="{{ url_for('add_cart', product_id=list.id) }}">Add To Cart</a>
+
             </div>
 
             {% endfor %}
