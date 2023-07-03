@@ -1,10 +1,37 @@
-.masthead{
-    padding-top:100px;
 
+
+.navbar{
+    background-color: #B9F3E4;
+}
+
+.cart-item{
+    padding: 10px 10px  ;
 }
 
 .img_show_case{
-    height : 100px;
-    width : 150px;
+    height : 150px;
+    width : 200px;
     object-fit: cover;
+    border-radius : 5px;
+}
+
+.showcase{
+    padding : 10px 0px;
+
+
+}
+
+.item-showcase{
+    padding : 20px 20px;
+    border: 2px solid red;
+    border-radius: 5px;
+    background-color: #ECF9FF;
+}
+
+td[colspan]:not([colspan="1"]) {
+    text-align: center;
+}
+
+.check-out{
+    padding-top: 50px;
 }

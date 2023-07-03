@@ -1,0 +1,124 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% include "header.html" %}
+{% block content %}
+
+
+<div class="container">
+    {% for cart in my_cart %}
+    <div class="col-lg-6 col-md-8 col-sm-12">
+        <div class="row cart-item">
+        {% for product in products %}
+
+            {% if product.id == cart.product_id %}
+            <div class="col-md-6 col-sm-12">
+                <img src="{{ product.img_url }}" class="img_show_case">
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <table>
+                            <tr>
+                                <td>Product Name </td>
+                                <td>: {{ product.name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Price</td>
+                                <td>: $ {{ product.price }}</td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    Quantity
+                                </td>
+                                <td>: {{ cart.product_quantity }}</td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    Total Price
+                                </td>
+                                <td>
+                                    : $ {{ product.price * cart.product_quantity }}
+                                </td>
+
+                            </tr>
+                    <tr>
+                        <td>
+                                    <a>
+                                            <a class="btn btn-primary" href="{{ url_for('delete_cart', product_id=cart.product_id) }}"><i class="fa-solid fa-minus fa-beat"></i></a>
+                                            {{ cart.product_quantity }}
+                                            <a class="btn btn-primary" href="{{ url_for('add_cart', product_id=cart.product_id) }}"><i class="fa-solid fa-plus fa-beat"></i></a>
+                                        </a>
+                                </td>
+                    </tr>
+                        </table>
+            </div>
+<!--            <table class="table">-->
+<!--                <tr>-->
+<!--                    <td>-->
+<!--                        <img src="{{ product.img_url }}" class="img_show_case">-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <table>-->
+<!--                            <tr>-->
+<!--                                <td>Product Name </td>-->
+<!--                                <td>: {{ product.name }}</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Price</td>-->
+<!--                                <td>: $ {{ product.price }}</td>-->
+
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    Quantity-->
+<!--                                </td>-->
+<!--                                <td>: {{ cart.product_quantity }}</td>-->
+
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    Total Price-->
+<!--                                </td>-->
+<!--                                <td>-->
+<!--                                    : $ {{ product.price * cart.product_quantity }}-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        </table>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            </table>-->
+
+
+            {% endif %}
+
+
+        {% endfor %}
+            </div>
+    </div>
+
+    {% endfor %}
+
+</div>
+<div class="container check-out">
+    <div class="row justify-content-center">
+
+
+    <div class="col-6 align-self-center">
+        <table class="table">
+            <tr>
+                <td>Total Price </td>
+                <td>: $ {{ total }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <a class="btn btn-success">CHECKOUT</a>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+    </div>
+{% endblock %}

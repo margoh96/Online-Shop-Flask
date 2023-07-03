@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, abort
+from flask import Flask, render_template, redirect, url_for, flash, abort, request
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
@@ -83,8 +83,13 @@ def load_user(user_id):
 @app.route("/")
 def home():
     all_product = ShopProduct.query.all()
+    my_cart = None
+    if current_user.is_authenticated:
+        my_cart = ShoppingCart.query.filter_by(user_id=current_user.id).all()
+    # products = ShopProduct.query.all()
+
     print(all_product)
-    return render_template("index.html", products=all_product)
+    return render_template("index.html", products=all_product, my_cart=my_cart)
 
 @app.route('/login', methods=["POST","GET"])
 def login():
@@ -176,7 +181,37 @@ def add_cart(product_id):
         )
         db.session.add(cart)
     db.session.commit()
-    return redirect(url_for("home"))
+    return redirect(request.referrer or url_for("home"))
+
+@app.route('/delete_cart/<int:product_id>', methods=["POST", "GET"])
+@login_required
+def delete_cart(product_id):
+    cart = ShoppingCart.query.filter_by(user_id=current_user.id, product_id=product_id).first()
+    if cart.product_quantity > 1:
+        cart.product_quantity -= 1
+    else:
+        # cart = ShoppingCart(
+        #     user_id=current_user.id,
+        #     product_id=product_id,
+        #     product_quantity=1,
+        # )
+        db.session.delete(cart)
+    db.session.commit()
+    return redirect(request.referrer or url_for("home"))
+
+
+@app.route('/cart', methods=["POST", "GET"])
+@login_required
+def show_cart():
+    my_cart = ShoppingCart.query.filter_by(user_id=current_user.id).all()
+    products = ShopProduct.query.all()
+    total_price = 0
+    for cart in my_cart:
+        for product in products:
+            if product.id == cart.product_id:
+                total_price += (cart.product_quantity * product.price)
+    print(total_price)
+    return render_template("cart.html", my_cart=my_cart, products=products, total=total_price)
 
 
 
