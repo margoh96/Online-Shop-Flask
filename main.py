@@ -7,8 +7,12 @@ from forms import LoginUserForm, RegisterUserForm, AddProductForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_bootstrap import Bootstrap
 from datetime import datetime
+import stripe
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
+
+stripe.api_key = "sk_test_51NQr9EEhjabjjmuYlPhLPElElrkm5uHiK0CFlw1GZi8LgGu8LxwfOEFHuW1vdgpGXIQGfXvfMWTJqXrxq5e1gCPO00uV8y6MDf"
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -213,6 +217,48 @@ def show_cart():
     print(total_price)
     return render_template("cart.html", my_cart=my_cart, products=products, total=total_price)
 
+@app.route('/create-checkout-session/<float:total>', methods=['POST','GET'])
+@login_required
+def create_checkout_session(total):
+    total_amount = int(total * 100)
+    starter_subscription = stripe.Product.create(
+        name="Starter Subscription",
+        description="$12/Month subscription",
+    )
+
+    starter_subscription_price = stripe.Price.create(
+        unit_amount=total_amount,
+        currency="usd",
+        # recurring={"interval": "month"},
+        product=starter_subscription['id'],
+    )
+    print(starter_subscription_price.id)
+    print(total, total_amount)
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price': starter_subscription_price.id,
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url='http://127.0.0.1:5000/success.html',
+            cancel_url='http://127.0.0.1:5000/cancel.html',
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
+
+@app.route('/success.html')
+def success():
+    return render_template('success.html')
+
+@app.route('/cancel.html')
+def cancel():
+    return render_template('cancel.html')
 
 
 if __name__ == "__main__":

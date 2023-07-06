@@ -1,7 +1,10 @@
-
+body{
+    background-color : #ECF2FF !important;
+}
 
 .navbar{
-    background-color: #B9F3E4;
+    background-color: #655DBB;
+
 }
 
 .cart-item{
@@ -13,6 +16,7 @@
     width : 200px;
     object-fit: cover;
     border-radius : 5px;
+    border-color : #3E54AC;
 }
 
 .showcase{
@@ -23,7 +27,7 @@
 
 .item-showcase{
     padding : 20px 20px;
-    border: 2px solid red;
+    border: 2px solid #3E54AC;;
     border-radius: 5px;
     background-color: #ECF9FF;
 }

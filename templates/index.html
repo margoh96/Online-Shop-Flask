@@ -3,19 +3,19 @@
 {% include "header.html" %}
 {% block content %}
 
-<header class="masthead">
-    <div class="overlay"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <div class="site-heading">
-                    <h1>My Online Shop</h1>
-                    <span class="subheading">A collection of Garbage.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<!--<header class="masthead">-->
+<!--    <div class="overlay"></div>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-lg-8 col-md-10 mx-auto">-->
+<!--                <div class="">-->
+<!--                    <h1>My Online Shop</h1>-->
+<!--                    <span class="subheading">A collection of Garbage.</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</header>-->
 
 
 <div class="container homepage">
@@ -64,7 +64,7 @@
                                             class="fa-solid fa-plus fa-beat"></i></a>
                                 </a>
                                 {% else %}
-                                <a class="btn btn-primary" href="{{ url_for('add_cart', product_id=list.id) }}">Add To
+                                <a class="btn btn-primary" href="{{ url_for('add_cart', product_id=list.id) }}"> <i class="fa-solid fa-cart-plus fa-beat-fade"></i>  Add To
                                     Cart</a>
                                 {% endif %}
 
@@ -72,7 +72,7 @@
                             </td>
                             {% else %}
                             <td colspan="2">
-                                <a class="btn btn-warning" href="{{ url_for('login') }}">Login to Add Cart</>
+                                <a class="btn btn-warning" href="{{ url_for('login') }}"><i class="fa-solid fa-right-to-bracket"></i>  Login to Add Cart</a>
                             </td>
 
                             {% endif %}

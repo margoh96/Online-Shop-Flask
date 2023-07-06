@@ -107,13 +107,13 @@
 
     <div class="col-6 align-self-center">
         <table class="table">
-            <tr>
+            <tr class="table-light">
                 <td>Total Price </td>
                 <td>: $ {{ total }}</td>
             </tr>
-            <tr>
+            <tr class="table-light">
                 <td colspan="2">
-                    <a class="btn btn-success">CHECKOUT</a>
+                    <a class="btn btn-success" href="{{ url_for('create_checkout_session', total=total) }}">CHECKOUT</a>
                 </td>
             </tr>
         </table>
